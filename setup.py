@@ -10,7 +10,7 @@ setup(
     author_email='colko818@gmail.com',
     url='https://github.com/kcollinssibley/pi-welcome',
     license='MIT',
-    packages=['src'],
+    packages=['pi_welcome'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
@@ -18,7 +18,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'app = src.app:main'
+            'app = pi_welcome.app:main'
         ]
     }
 )

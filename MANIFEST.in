@@ -1,4 +1,4 @@
 include LICENSE
-graft src/static
-graft src/templates
+graft pi_welcome/static
+graft pi_welcome/templates
 global-exclude *.pyc

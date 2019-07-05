@@ -1,11 +1,11 @@
-from flask import Flask
-from flask import render_template
+from flask import Flask, render_template
 
 DEBUG = True
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
+import pi_welcome.mbta
 
 @app.route('/hello')
 def helloWorld():
@@ -26,10 +26,8 @@ def index():
 def contactUs():
     return render_template('contactus.html')
 
-
 def main():
     app.run(port=8080)
-
 
 if __name__ == '__main__':
     main()
