@@ -1,0 +1,134 @@
+﻿
+body{
+    font-size:13px;
+}
+
+.page-profile .left-col .list-group-item
+{
+margin-top:0px;
+}
+
+.btn-file
+{
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-file input[type=file]
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+ul.dropdown-menu > li > a
+{
+    padding: 2px 18px;
+}
+
+.sortAsc
+{
+    background-image: url('../Content/images/sort_asc.png');
+    background-position-x:right;
+    background-repeat: no-repeat;
+}
+
+.sortDesc
+{
+    background-image: url('../Content/images/sort_desc.png');
+    background-position-x:right;
+    background-repeat: no-repeat;
+}
+
+.modal-open
+{
+    overflow: scroll;
+}
+
+.input-xs
+{
+    height: 22px;
+    padding: 2px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}
+
+.control-label-xs
+{
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.form-group-xs
+{
+    margin-bottom: 5px;
+}
+
+.help-block-xs
+{
+    font-size: 11px;
+}
+
+table
+{
+  font-size: 12px;
+}
+
+table.voucher-table
+{
+    font-size: 11px;
+    /*word-wrap: break-word;*/
+    /*table-layout: fixed;*/
+}
+
+table.voucher-table th
+{
+    background-color: #5c6284;
+    font-size: 12px;
+    /*width: auto !important;*/
+}
+
+small.sub-title
+{
+    font-style: italic;
+    color: #3d3d3d;
+}
+
+.page-header
+{
+  border-bottom: 1px solid #e4e4e4;
+  margin: 0px -18px 18px -18px;
+  padding: 20px 18px;
+}
+
+.modal-header
+{
+    background-color: #5c6284;
+}
+
+.main-column
+{
+    min-width: 360px;
+    padding-bottom: 10px;
+}
+
+.img-bordered {
+    border-radius: 2%;
+    width: 100%;
+    /*border: 1px solid gray;*/
+    border-style: inset;
+    -moz-box-shadow: 1px 2px 4px rgba(0, 0, 0,0.5);
+    -webkit-box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+}
