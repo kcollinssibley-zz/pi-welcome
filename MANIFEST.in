@@ -1,4 +1,6 @@
 include LICENSE
+graft pi_welcome/api
+graft pi_welcome/lib
 graft pi_welcome/static
 graft pi_welcome/templates
 global-exclude *.pyc
