@@ -1,0 +1,11 @@
+mbta_stations:
+    - id: 70009 # station id
+      distance: 5 # walking distance (minutes)
+      direction: 1 # inbound(1)/outbound(0)
+    - id: 70010
+      distance: 5
+      direction: 1
+weather_location: 348735
+api_keys:
+    mbta: ''
+    weather: 'zBRr6oyWuqkAAjYhASxOBvD3lzCGKvlt'
