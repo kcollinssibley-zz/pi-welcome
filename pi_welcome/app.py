@@ -2,18 +2,18 @@ import argparse
 import os
 import sys
 
-import yaml
-
 from flask import Flask, render_template
+
+from pi_welcome.config import Config
 
 DEBUG = True
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-import pi_welcome.mbta
+config = Config()
 
-config = None
+import pi_welcome.api.mbta
 
 
 @app.route('/hello')
@@ -47,8 +47,7 @@ def main():
     if not (os.path.exists(config_file) and os.path.isfile(config_file)):
         raise ValueError("'{}' is not a valid config file".format(config_file))
 
-    with open(config_file) as f:
-        config = yaml.safe_load(f)
+    config.load(config_file)
 
     app.run(port=8080)
 

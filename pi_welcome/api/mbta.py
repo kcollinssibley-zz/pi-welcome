@@ -1,10 +1,7 @@
-from pi_welcome import app
-
-MBTA_API = 'https://api-v3.mbta.com'
-ROXBURY_ID = '70009'
-INBOUND_DIR = '1'
+from pi_welcome.app import app
+from pi_welcome.lib import mbtalib
 
 
-@app.app.route('/api/mbta')
-def getMBTAPredition():
-    return 'TODO(KCS): call MBTA lib function here'
+@app.route('/api/mbta')
+def MBTAPredictions():
+    return mbtalib.getMBTAPredictions()
