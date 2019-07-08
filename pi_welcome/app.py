@@ -1,5 +1,6 @@
 import argparse
 import os
+import socket
 import sys
 
 from flask import Flask, render_template
@@ -49,7 +50,9 @@ def main():
 
     config.load(config_file)
 
-    app.run(port=8080)
+    ip_addr = socket.gethostbyname(socket.gethostname())
+
+    app.run(host=ip_addr, port=8080)
 
 
 if __name__ == '__main__':
