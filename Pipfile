@@ -8,6 +8,9 @@ pre-commit = "*"
 pylint = "*"
 
 [packages]
+flask = ">=1.1,<2.0"
+PyYAML = ">=5.1,<6.0"
+requests = ">=2.22,<3.0"
 
 [requires]
 python_version = "3.7"

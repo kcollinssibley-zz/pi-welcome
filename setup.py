@@ -13,10 +13,6 @@ setup(
     packages=['pi_welcome'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'flask>=1.1.0,<2.0',
-        'PyYAML>=5.1.1,<6.0'
-    ],
     entry_points={
         'console_scripts': [
             'app = pi_welcome.app:main'
