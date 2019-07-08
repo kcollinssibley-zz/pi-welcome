@@ -1,14 +1,48 @@
 {% extends "layout.html" %}
 {% block body %}
 <script type="text/javascript">
+    function IndexViewModel() {
+        var self = this;
+        self.api = "/api/";
 
+        self.mbta_prediction = ko.observableArray([]);
+
+        self.getMBTAPredictions = function() {
+            jQuery.ajax({
+                url: self.api + 'mbta',
+                type: "GET",
+                contentType: "text/json",
+                success: function(data) {
+                    self.mbta_prediction(data);
+                    console.log(self.mbta_prediction());
+                },
+                error: function (error) {
+                    showError(error);
+                }
+            });
+        }
+
+        self.getMBTAPredictions();
+
+        setInterval(self.getMBTAPredictions, 30000);
+    }
+
+    setInterval(myClock, 1000);
+
+    function myClock() {
+        var d = new Date();
+        document.getElementById("clock").innerHTML = d.toLocaleTimeString();
+    }
+
+    $(document).ready(function() {
+        ko.applyBindings(
+            new IndexViewModel(),
+            document.getElementById('index'));
+
+        myClock();
+    });
 </script>
 <div id="index">
-    <div class="row">
-        <div class="col-sm-12">
-            <h3>Pi-Welcome</h3>
-        </div>
-    </div>
     <div class="row">
         <div class="col-sm-6">
             <div class="card bg-light" style="width: 100%">
@@ -18,19 +52,72 @@
                     MBTA Predictions
                 </div>
                 <div class="card-body">
-                    test
+                    <ul class="list-group list-group-flush bg-light" data-bind="foreach: mbta_prediction">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-sm-8 text-left">
+                                    <h6 data-bind="text: name"></h6>
+                                </div>
+                                <div class="col-sm-4 text-right">
+                                    (<span data-bind="text: distance"></span> min)
+                                    <img src="{{ url_for('static', filename='images/walking-icon-hi.png') }}", style="height: 14px" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-primary text-center">
+                                        <span>Next train
+                                        <span data-bind="fromNow:
+                                            atbat.attributes.arrival_time"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <!-- ko foreach: ondeck -->
+                                <div class="col-sm-6">
+                                    <div class="alert alert-secondary text-center">
+                                        <!-- ko with: attributes -->
+                                        <div data-bind="time: arrival_time"></div>
+                                        <!-- /ko -->
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
         <div class="col-sm-6">
-            <div class="card bg-light" style="width: 100%">
-                <div class="card-header bg-info">
-                    <img src="{{ url_for('static',
-                    filename='images/weather.png') }}", height="25px" />
-                    Weather
+            <div class="row">
+                <div class="col-sm-12">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <img src="{{ url_for('static',
+                                    filename='images/clock.png') }}",
+                                    height="100px" />
+                                </div>
+                                <div class="col-sm-6 text-center">
+                                    <h3 id="clock"></h3>
+                                </div>
+                            </div>
+                        </div>
                 </div>
-                <div class="card-body">
-                    weather
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card bg-light" style="width: 100%">
+                        <div class="card-header bg-info">
+                            <img src="{{ url_for('static', filename='images/weather.png') }}", height="25px" />
+                            Weather
+                        </div>
+                        <div class="card-body">
+                            weather
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
