@@ -24,7 +24,7 @@ def checkStatus(resp):
     return False
 
 def getMBTAPredictions():
-    station_data = {}
+    station_data = []
 
     stations = config.getStations()
     for station in stations:
@@ -42,13 +42,16 @@ def getMBTAPredictions():
         resp = requests.get(url)
 
         if checkStatus(resp):
-            station_data[stop] = resp.json()
-            station_data[stop]['name'] = station['name']
+            data = resp.json()
+            data['name'] = station['name']
+
+            station_data.append(data)
         else:
-            station_data[stop] = {
+            data = {
                 'name': station['name'],
                 'status_code': resp.status_code,
                 'message': resp.status
             }
+            station_data.append(data)
 
     return station_data
