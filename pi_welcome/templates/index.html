@@ -12,7 +12,7 @@
                 url: self.api + 'mbta',
                 type: "GET",
                 contentType: "text/json",
-                success: function(data) {
+                success: function (data) {
                     self.mbta_prediction(data);
                     console.log(self.mbta_prediction());
                 },
@@ -22,7 +22,22 @@
             });
         }
 
+        self.getWeatherPrediction = function () {
+            jQuery.ajax({
+                url: self.api + 'weather',
+                type: "GET",
+                contentType: "text/json",
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (error) {
+                    showError(error);
+                }
+            });
+        }
+
         self.getMBTAPredictions();
+        self.getWeatherPrediction();
 
         setInterval(self.getMBTAPredictions, 30000);
     }
