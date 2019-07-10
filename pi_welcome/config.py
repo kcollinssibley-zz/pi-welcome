@@ -14,3 +14,9 @@ class Config(object):
 
     def getStations(self):
         return self.config['mbta_stations']
+
+    def getWeatherLocation(self):
+        return self.config['weather_location']
+
+    def getWeatherApiKey(self):
+        return self.config['api_keys']['weather']

@@ -15,6 +15,7 @@ app.config.from_object(__name__)
 config = Config()
 
 import pi_welcome.api.mbta
+import pi_welcome.api.weather
 
 
 @app.route('/hello')
