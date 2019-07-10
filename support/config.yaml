@@ -1,11 +1,11 @@
 mbta_stations:
     - id: 70009 # station id
       name: 'Roxbury Crossing'
-      distance: 5 # walking distance (minutes)
+      distance: 6 # walking distance (minutes)
       direction: 1 # inbound(1)/outbound(0)
     - id: 70007
       name: 'Jackson Square'
-      distance: 5
+      distance: 7
       direction: 1
 weather_location: 348735
 api_keys:
