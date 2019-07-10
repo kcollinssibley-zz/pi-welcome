@@ -38,6 +38,25 @@ ko.bindingHandlers.date =
     }
 };
 
+ko.bindingHandlers.time =
+{
+    update: function (element, valueAccessor, allBindingsAccessor, viewModel)
+    {
+        var val = valueAccessor();
+
+        var formatted = "";
+        var date = moment(ko.utils.unwrapObservable(val));
+        var format = allBindingsAccessor().format || 'h:mm A'; //default format
+
+        if (date && date.isValid())
+        {
+            formatted = date.format(format);
+        }
+
+        element.innerHTML = formatted;
+    }
+};
+
 ko.bindingHandlers.fromNow =
 {
     update: function (element, valueAccessor, allBindingsAccessor, viewModel)
