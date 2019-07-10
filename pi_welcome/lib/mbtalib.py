@@ -5,6 +5,7 @@ from pi_welcome.app import config
 MBTA_API = 'https://api-v3.mbta.com/predictions'
 
 # TODO(KCS): Add MBTA Alerts functionality
+# TODO(KCS): Filter out predictions that are past current time.
 
 # TODO(KCS): Add logging
 def checkStatus(resp):
@@ -42,8 +43,12 @@ def getMBTAPredictions():
         resp = requests.get(url)
 
         if checkStatus(resp):
-            data = resp.json()
+            raw_data = resp.json()
+            data = {}
             data['name'] = station['name']
+            data['distance'] = station['distance']
+            data['atbat'] = raw_data['data'][0]
+            data['ondeck'] = raw_data['data'][1:3]
 
             station_data.append(data)
         else:
