@@ -1,6 +1,7 @@
 import requests
 
 from pi_welcome.app import config
+from pi_welcome.lib.common import checkStatus
 
 WEATHER_API = "http://dataservice.accuweather.com/forecasts/v1/daily/1day/";
 
@@ -16,4 +17,11 @@ def getWeatherUpdate():
 
     resp = requests.get(url)
 
-    return resp['Headline']
+    if checkStatus(resp):
+        return resp.json()
+    else:
+        error = resp.json()
+        return {
+            'status_code': resp.status_code,
+            'error': error
+        }

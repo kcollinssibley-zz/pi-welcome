@@ -1,28 +1,14 @@
+import datetime
+
 import requests
 
 from pi_welcome.app import config
+from pi_welcome.lib.common import checkStatus
+from pi_welcome.lib.common import est
 
 MBTA_API = 'https://api-v3.mbta.com/predictions'
 
 # TODO(KCS): Add MBTA Alerts functionality
-# TODO(KCS): Filter out predictions that are past current time.
-
-# TODO(KCS): Add logging
-def checkStatus(resp):
-    status = resp.status_code
-    if status == 200:
-        print("200, Good")
-        return True
-    elif status == 400:
-        print("400, Invalid sort key")
-    elif status == 403:
-        print("403 Forbidden")
-    elif status == 429:
-        print("429 Too many requests")
-    else:
-        print("Unknown status code: {}".format(status))
-
-    return False
 
 def getMBTAPredictions():
     station_data = []
@@ -47,15 +33,33 @@ def getMBTAPredictions():
             data = {}
             data['name'] = station['name']
             data['distance'] = station['distance']
-            data['atbat'] = raw_data['data'][0]
-            data['ondeck'] = raw_data['data'][1:3]
+
+            trains = raw_data['data']
+            for i in range(len(trains)):
+                # 2019-07-12T23:35:25-04:00
+                train_arrival = datetime.datetime.strptime(
+                    trains[i]['attributes']['arrival_time'],
+                    '%Y-%m-%dT%H:%M:%S%z')
+                now = datetime.datetime.now(est)
+                delta = datetime.timedelta(minutes=data['distance'])
+                station_arrival = now + delta
+
+                if train_arrival > station_arrival:
+                    data['atbat'] = trains[i]
+                    data['ondeck'] = trains[(i+1):(i+3)]
+                    break
+                else:
+                    print("train arrival: {} vs station_arrival: {}".format(
+                        train_arrival.time(),
+                        station_arrival.time()))
 
             station_data.append(data)
         else:
+            error = resp.json()
             data = {
                 'name': station['name'],
                 'status_code': resp.status_code,
-                'message': resp.status
+                'error': error
             }
             station_data.append(data)
 
