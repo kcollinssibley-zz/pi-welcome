@@ -77,6 +77,18 @@ ko.bindingHandlers.fromNow =
     }
 };
 
+ko.bindingHandlers.upperCase =
+{
+    update: function (element, valueAccessor, allBindingsAccessor, viewModel)
+    {
+        var val = valueAccessor();
+        var content = ko.utils.unwrapObservable(val);
+
+        var formatted = content[0].toUpperCase() + content.substr(1, content.length);;
+        element.innerHTML = formatted;
+    }
+};
+
 ko.bindingHandlers.friendlyBool =
 {
     update: function (element, valueAccessor, allBindingsAccessor)
