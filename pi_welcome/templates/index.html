@@ -1,11 +1,15 @@
 {% extends "layout.html" %}
 {% block body %}
 <script type="text/javascript">
+    // TODO(KCS): Add isLoading functionality
     function IndexViewModel() {
         var self = this;
         self.api = "/api/";
 
         self.mbta_prediction = ko.observableArray([]);
+        self.mbta_error = ko.observable(null);
+        self.weather_prediction = ko.observable(null);
+        self.weather_error = ko.observable(null);
 
         self.getMBTAPredictions = function() {
             jQuery.ajax({
@@ -13,8 +17,11 @@
                 type: "GET",
                 contentType: "text/json",
                 success: function (data) {
-                    self.mbta_prediction(data);
-                    console.log(self.mbta_prediction());
+                    if ('error' in data) {
+                        self.mbta_error(data);
+                    } else {
+                        self.mbta_prediction(data);
+                    }
                 },
                 error: function (error) {
                     showError(error);
@@ -23,30 +30,67 @@
         }
 
         self.getWeatherPrediction = function () {
-            jQuery.ajax({
-                url: self.api + 'weather',
-                type: "GET",
-                contentType: "text/json",
-                success: function (data) {
-                    console.log(data);
-                },
-                error: function (error) {
-                    showError(error);
-                }
-            });
+            if (!!Cookies.get('weather_date')) {
+                console.log('Weather cookie is undefined, loading...');
+
+                jQuery.ajax({
+                    url: self.api + 'weather',
+                    type: "GET",
+                    contentType: "text/json",
+                    success: function (data) {
+                        if ('error' in data) {
+                            self.weather_error(data);
+                        } else {
+                            // 23 hrs, 59 mins from now.
+                            var expire_time = new Date(new Date().getTime() + 1439 * 60 * 1000);
+                            Cookies.set(
+                                'weather_data',
+                                data,
+                                {
+                                    expires: expire_time,
+                                    path: ''
+                                }
+                            );
+                            self.weather_prediction(data);
+                        }
+                    },
+                    error: function (error) {
+                        showError(error);
+                    }
+                });
+            } else {
+                console.log('Loading weather prediction from cookie');
+
+                var data = Cookies.getJSON('weather_data');
+                self.weather_prediction(data);
+                console.log(self.weather_prediction());
+            }
         }
 
         self.getMBTAPredictions();
         self.getWeatherPrediction();
 
+        // Check for MBTA updates every 30 seconds.
         setInterval(self.getMBTAPredictions, 30000);
+        // Check for weather updates every hour.
+        setInterval(self.getWeatherPredictions, 3600000);
     }
 
     setInterval(myClock, 1000);
 
     function myClock() {
         var d = new Date();
-        document.getElementById("clock").innerHTML = d.toLocaleTimeString();
+        var hr = d.getHours();
+        var min = d.getMinutes();
+
+        if (hr < 10) {
+            hr = '0' + hr;
+        }
+        if (min < 10) {
+            min = '0' + min;
+        }
+
+        document.getElementById("clock").innerHTML = hr + ':' + min;
     }
 
     $(document).ready(function() {
@@ -64,7 +108,7 @@
                 <div class="card-header bg-info">
                     <img src="{{ url_for('static',
                     filename='images/MBTA-LOGO-bw.png') }}", height="25px" />
-                    MBTA Predictions
+                    <strong>MBTA Predictions</strong>
                 </div>
                 <div class="card-body">
                     <ul class="list-group list-group-flush bg-light" data-bind="foreach: mbta_prediction">
@@ -110,12 +154,25 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <img src="{{ url_for('static',
-                                    filename='images/clock.png') }}",
-                                    height="100px" />
+                                    <div class="row">
+                                        <div class="col-sm-12 text-center">
+                                            <img src="{{ url_for('static',
+                                                filename='images/clock.png') }}",
+                                                height="80px" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 text-center">
+                                            <h2 id="clock"></h2>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-sm-6 text-center">
-                                    <h3 id="clock"></h3>
+                                <div class="col-sm-6">
+                                    <div class="row text-center">
+                                        <div class="col-sm-12">
+                                            <button class="btn btn-info btn-lg btn-sm">Light Control</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -127,10 +184,39 @@
                     <div class="card bg-light" style="width: 100%">
                         <div class="card-header bg-info">
                             <img src="{{ url_for('static', filename='images/weather.png') }}", height="25px" />
-                            Weather
+                            <strong>Weather</strong>
                         </div>
                         <div class="card-body">
-                            weather
+                            <!-- ko with: weather_prediction -->
+                            <div class="row" data-bind="with: Headline">
+                                <div class="col-sm-4">
+                                    <h4 data-bind="upperCase: Category"></h4>
+                                </div>
+                                <div class="col-sm-8">
+                                    <i data-bind="text: Text"></i>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row" data-bind="with: DailyForecasts[0]">
+                                <div class="row" data-bind="with: Temperature">
+                                    <div class="col-sm-6">
+                                        <strong>Low: <span data-bind="text: Minimum.Value"></span>&#176;F</strong>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <strong>High: <span data-bind="text: Maximum.Value"></span>&#176;F</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /ko -->
+                            <!-- ko with: weather_error -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger text-center"
+                                        data-bind="text: error.Message">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /ko -->
                         </div>
                     </div>
                 </div>
