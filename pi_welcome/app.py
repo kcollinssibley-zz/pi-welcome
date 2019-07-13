@@ -43,6 +43,7 @@ def main():
         description='A morning information dump including MBTA predictions, '
         'Weather, etc')
     parser.add_argument('config_file', type=str, help='configuration file.')
+    parser.add_argument('--ip', type=str, help='IP address to run on.')
     args = parser.parse_args()
 
     config_file = args.config_file
@@ -51,7 +52,9 @@ def main():
 
     config.load(config_file)
 
-    ip_addr = socket.gethostbyname(socket.gethostname())
+    ip_addr = args.ip
+    if ip_addr is None:
+        ip_addr = socket.gethostbyname(socket.gethostname())
 
     app.run(host=ip_addr, port=8080)
 
